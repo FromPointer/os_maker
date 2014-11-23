@@ -1,0 +1,17 @@
+
+os_image: kernel.bin
+	cat ../boot_sect.bin kernel.bin > os_image
+
+
+
+kernel.bin: kernel_entry.o kernel.o
+	ld -o kernel.bin -Ttext 0x1000 kernel_entry.o kernel.o --oformat binary
+
+kernel.o: kernel.c
+	gcc -ffreestanding -c kernel.c -o kernel.o
+
+kernel_entry.o: kernel_entry.asm
+	nasm kernel_entry.asm -f elf -o kernel_entry.o
+
+clean: 
+	rm -rf *~ *o *dis *bin os_image* os-image*
